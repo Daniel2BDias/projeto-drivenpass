@@ -2,21 +2,25 @@ import faker from '@faker-js/faker';
 import httpStatus from 'http-status';
 import supertest from 'supertest';
 import { cleanDb } from '../helpers';
-import prisma from '@/database';
+import prisma, { connectDb, disconnectDB } from '@/database';
 import { server, init, close } from '../../src/server';
 import { createUser } from '../factories/users.factory';
 
 beforeAll(async () => {
     await init();
+    connectDb();
+    });
+  
+  afterEach(async () => {
+      await cleanDb();
+      
   });
-
-afterEach(async () => {
-    await cleanDb();
-});
-
-afterAll(async () => {
-    close();
-});
+  
+  afterAll(async () => {
+      await disconnectDB();
+      close();
+      server.listen(5000).close();
+  })
 
   const app = supertest(server);
 

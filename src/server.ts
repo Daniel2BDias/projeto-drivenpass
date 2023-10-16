@@ -27,9 +27,16 @@ export async function close(): Promise<void> {
 }
 
 const PORT = process.env.PORT || 5000;
+let instance: any;
 
 init().then(() => {
-    server.listen(PORT, () => {
+    instance = server.listen(PORT, () => {
       console.log(`Server is listening on port ${PORT}.`);
     });
   });
+
+close().then(
+  () => {
+    instance?.close();
+  }
+)

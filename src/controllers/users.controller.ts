@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import httpStatus from "http-status";
 import * as jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import { unauthorizedError } from "@/errors/unathorized.error";
 
 dotenv.config()
 
@@ -21,7 +22,7 @@ const login = async (req: Request, res: Response) => {
     const jwtGenerator = 
     jwt.sign(userServiceAcess, secretKey, (err, token) => {
         if (err) {
-          throw res.status(500).json({ message: "JWT generation failed" });
+          return res.status(500).json({ message: "JWT generation failed" });
         }
   
         res.status(httpStatus.OK).send({ token });

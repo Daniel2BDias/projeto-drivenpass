@@ -5,26 +5,25 @@ import { cleanDb } from '../helpers';
 import { server, init, close } from '@/server';
 import { createUser } from '../factories/users.factory';
 import dotenv from "dotenv";
-import prisma from '@/database';
+import prisma, { connectDb, disconnectDB } from '@/database';
 import { PrismaClient } from '@prisma/client';
 
 dotenv.config();
 
 beforeAll(async () => {
-    if(prisma !== new PrismaClient){
-        await init();
-    } else {
-        return
-    }
-
+  await init();
+  connectDb();
   });
 
 afterEach(async () => {
     await cleanDb();
+    
 });
 
 afterAll(async () => {
-    await close();
+    await disconnectDB();
+    close();
+    server.listen(5000).close();
 })
 
 const app = supertest(server);

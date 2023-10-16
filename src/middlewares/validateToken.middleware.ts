@@ -13,6 +13,8 @@ export async function authenticateToken(req: AuthenticatedRequest, res: Response
   const token = authHeader.split(' ')[1];
   if (!token) throw unauthorizedError();
 
+  if(process.env.JWT_SECRET === undefined || process.env.JWT_SECRET === null) throw unauthorizedError();
+
   const { email, id } = jwt.verify(token, process.env.JWT_SECRET) as JWTPayload;
 
   const user = await authenticationRepository.findUser(email);
